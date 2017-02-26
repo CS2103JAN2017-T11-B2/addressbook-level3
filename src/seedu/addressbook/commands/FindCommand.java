@@ -46,11 +46,29 @@ public class FindCommand extends Command {
         final List<ReadOnlyPerson> matchedPersons = new ArrayList<>();
         for (ReadOnlyPerson person : addressBook.getAllPersons()) {
             final Set<String> wordsInName = new HashSet<>(person.getName().getWordsInName());
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            
+
+            Collection<String> wordsInNameLowerCase = changeStringsToLower(wordsInName);
+            Collection<String> keywordsLowerCase = changeStringsToLower(keywords);
+            if (!Collections.disjoint(wordsInNameLowerCase, keywordsLowerCase)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
+        return matchedPersons;        
+    }
+    
+    /** Change strings into lower case
+     * 
+     * @param setOfStrings Set of strings need to change into lower case
+     * @return Set of Strings in lower case
+     */
+    private static Collection<String> changeStringsToLower(Collection<String> setOfStrings){
+    	Collection<String> lowerStrings = new HashSet<String>();
+    	for (String s : setOfStrings) {
+            String temp=s.toLowerCase();
+            lowerStrings.add(temp);
+        }
+    	return lowerStrings;
     }
 
     public boolean isMutating() {
