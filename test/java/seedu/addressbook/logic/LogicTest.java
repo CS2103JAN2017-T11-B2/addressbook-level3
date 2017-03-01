@@ -12,15 +12,49 @@ import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.person.*;
 import seedu.addressbook.data.tag.Tag;
 import seedu.addressbook.data.tag.UniqueTagList;
-import seedu.addressbook.storage.StorageFile;
+import seedu.addressbook.storage.Storage;
+import seedu.addressbook.storage.Storage.StorageOperationException;
+import seedu.addressbook.storage.StorageFile.InvalidStorageFilePathException;
+import seedu.addressbook.storage.jaxb.AdaptedAddressBook;
 
+import java.nio.file.Paths;
 import java.util.*;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 import static junit.framework.TestCase.assertEquals;
 import static seedu.addressbook.common.Messages.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class LogicTest {
+    
+    public class StorageStub extends Storage {
+        
+        private AddressBook addressBook;
+        
+        public final Path path;
+        
+        StorageStub(String filePath) throws InvalidStorageException {
+            
+            path = Paths.get(filePath);
+           
+        }
+        
+        public void save(AddressBook addressBook) throws StorageOperationException {}
+        
+        public AddressBook load() throws StorageOperationException {
+            return addressBook;
+        }
+        
+        public String getPath() {
+            return "";
+        }
+        
+    }
 
     /**
      * See https://github.com/junit-team/junit4/wiki/rules#temporaryfolder-rule
@@ -28,13 +62,13 @@ public class LogicTest {
     @Rule
     public TemporaryFolder saveFolder = new TemporaryFolder();
 
-    private StorageFile saveFile;
+    private StorageStub saveFile;
     private AddressBook addressBook;
     private Logic logic;
 
     @Before
     public void setup() throws Exception {
-        saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath());
+        saveFile = new StorageStub(saveFolder.newFile("testSaveFile.txt").getPath());
         addressBook = new AddressBook();
         saveFile.save(addressBook);
         logic = new Logic(saveFile, addressBook);
